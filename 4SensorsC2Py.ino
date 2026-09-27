@@ -34,7 +34,7 @@ SensorSlot sensorSlots[] = {
   {5, 0},
   {6, 0},
   {7, 0},
-  // {0, 0x0D},   // 9th sensor: second MLX on channel 0 at a different address
+  {0, 0x0D},  
 };
 
 const uint8_t NUM_SENSORS = sizeof(sensorSlots) / sizeof(sensorSlots[0]);
@@ -47,7 +47,7 @@ bool    sensorActive[NUM_SENSORS];
 uint8_t sensorAddr[NUM_SENSORS];
 
 void selectMuxChannel(uint8_t channel) {
-  if (channel > 7) return;               // PCA9548A has channels 0-7 only
+  if (channel > 7) return;              
   Wire.beginTransmission(PCA9548A_ADDR);
   Wire.write(1 << channel);
   Wire.endTransmission();
