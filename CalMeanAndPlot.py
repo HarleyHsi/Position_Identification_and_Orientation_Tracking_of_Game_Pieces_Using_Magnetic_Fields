@@ -20,7 +20,7 @@ COLUMNS = [
     "x_cal", "y_cal", "z_cal",
 ]
 
-# Which set of columns to analyse ("raw" or "cal")
+
 MODE = "cal"   # change to "raw" to analyse raw values
 
 AXES   = ["x", "y", "z"]
@@ -62,7 +62,7 @@ def compute_stats(df: pd.DataFrame, mode: str = "cal") -> dict:
             "std":   data.std(ddof=1),
             "min":   data.min(),
             "max":   data.max(),
-            "data":  data,          # kept for plotting
+            "data":  data,       
         }
     return stats
 
@@ -89,13 +89,13 @@ def print_stats(sensor_id, stats: dict) -> None:
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def main():
-    all_stats   = {}   # { filename : stats_dict }
-    sensor_dfs  = {}   # { filename : dataframe  }
+    all_stats   = {}   
+    sensor_dfs  = {}   
 
     # ── 1. Load & analyse ────────────────────────────────────────────────────
     for filepath in CSV_FILES:
         df        = load_sensor(filepath)
-        sid       = df["sensor_id"].iloc[0]        # use id from data
+        sid       = df["sensor_id"].iloc[0]       
         stats     = compute_stats(df, mode=MODE)
 
         all_stats[filepath]  = (sid, stats)
@@ -103,7 +103,7 @@ def main():
 
         print_stats(sid, stats)
 
-    # ── 2. Plot: one figure per sensor (3 histogram subplots) ────────────────
+    # ── 2. Plot: one figure per sensor ────────────────
     for filepath, (sid, stats) in all_stats.items():
 
         fig = plt.figure(figsize=(14, 4))
@@ -117,13 +117,13 @@ def main():
             color = COLORS[AXES[col_idx]]
             n     = len(s["data"])
 
-            # Sturges' rule for bin count
+
             bins = max(10, int(np.ceil(np.log2(n) + 1)))
 
             ax.hist(s["data"], bins=bins, color=color, edgecolor="white",
                     linewidth=0.6, alpha=0.85)
 
-            # Overlay mean ± 1σ lines
+
             ax.axvline(s["mean"],            color="black", linewidth=1.5,
                        linestyle="--",  label=f"μ = {s['mean']:.3f}")
             ax.axvline(s["mean"] - s["std"], color="grey",  linewidth=1.0,
